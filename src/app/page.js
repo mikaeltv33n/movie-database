@@ -1,5 +1,6 @@
 "use client"
 
+// import PokelistItem from "@/components/pokelist-item"
 import Pokemon from "@/components/pokemon"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -14,7 +15,7 @@ export default function Home() {
   }
 
   function backwardHandler() {
-
+    if (count === 0) return
     setCount(count - 20)
   }
 
@@ -30,13 +31,20 @@ export default function Home() {
 
   return (
     <main>
-      <h1>Hej verden</h1>
-      <button className="block " onClick={backwardHandler}>Previous page</button>
-      <button onClick={forwardHandler}>Next page</button>
-      
+      <h1 className="text-3xl">Pokedex</h1>
+
+      <div className="flex start gap-4">
+
+        <button onClick={backwardHandler}>Previous page</button>
+        <button onClick={forwardHandler}>Next page</button>
+      </div>
+      {/* <ul>
+        {pokemons.map(pokemon => <PokelistItem name="pokemon.name" />)}
+      </ul> */}
       {pokemons.map((pokemon) => (
         <Link className="block" href={`/pokemon/${pokemon.name}`}>{pokemon.name}</Link>
-      ))}
+        ))
+      }
     </main>
   )
 }

@@ -2,3 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+body {
+    transition: background-color 300ms ease;
+    font-family: serif;
+}
+
+.light-mode {
+    background-color: white;
+  
+}
+
+.dark-mode{
+    background-color: black;
+    color: white;
+}

@@ -12,7 +12,6 @@ const MovieDetail = ({ params }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Fetch movie detail and initialize bookmark status from local storage
   useEffect(() => {
     const fetchMovieDetail = async () => {
       try {
@@ -34,7 +33,6 @@ const MovieDetail = ({ params }) => {
       fetchMovieDetail();
     }
 
-    // Initialize bookmark status from local storage
     const storedBookmark = localStorage.getItem(`bookmark_${params.movieid}`);
     setIsBookmarked(storedBookmark === 'true');
   }, [params.movieid]);
@@ -46,17 +44,23 @@ const MovieDetail = ({ params }) => {
   const toggleBookmark = async () => {
     try {
       const newBookmarkStatus = !isBookmarked;
-      localStorage.setItem(`bookmark_${params.movieid}`, newBookmarkStatus);
+
+      console.log('New bookmark status:', newBookmarkStatus);
+
+      localStorage.setItem(`bookmark_${params.movieid}`, newBookmarkStatus.toString());
+
       setIsBookmarked(newBookmarkStatus);
 
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
       const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
 
+      const method = 'POST'; 
+      
       const response = await fetch(url, {
-        method: newBookmarkStatus ? 'POST' : 'DELETE',
+        method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNjFkMDNjNDg5NzYyMjg1M2YwOWQxZTBiN2E0MWM1YiIsInN1YiI6IjYzZTI0YmFiNTI4YjJlMDA3ZDVlZGRiNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHlKs9hmsElURN4IXdAcNb-Fs6UzxGJvQVPsJwuQBl0'
+          Authorization: "Bearer " + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN
         },
         body: JSON.stringify({
           media_type: 'movie',
@@ -68,6 +72,8 @@ const MovieDetail = ({ params }) => {
       if (!response.ok) {
         throw new Error(`Failed to ${newBookmarkStatus ? 'add' : 'remove'} bookmark`);
       }
+
+      console.log('Bookmark toggled successfully');
     } catch (error) {
       console.error('Bookmark Error:', error);
     }

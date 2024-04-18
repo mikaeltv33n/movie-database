@@ -1,17 +1,21 @@
 "use client"
-
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
-const BookmarkedMovies = ({ onBookmarkToggle }) => {
+
+const BookmarkedMovies = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBookmarkedMovies().then((movies) => {
-      setBookmarkedMovies(movies);
+      setBookmarkedMovies(movies.map(movie => ({ ...movie, isBookmarked: localStorage.getItem(`bookmark_${movie.id}`) === 'true' })));
+      setLoading(false);
     }).catch((error) => {
       console.error('Error fetching bookmarked movies:', error);
+      setLoading(false);
     });
   }, []);
 
@@ -22,7 +26,7 @@ const BookmarkedMovies = ({ onBookmarkToggle }) => {
         method: 'GET',
         headers: {
           accept: 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNjFkMDNjNDg5NzYyMjg1M2YwOWQxZTBiN2E0MWM1YiIsInN1YiI6IjYzZTI0YmFiNTI4YjJlMDA3ZDVlZGRiNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KHlKs9hmsElURN4IXdAcNb-Fs6UzxGJvQVPsJwuQBl0'
+          Authorization: "Bearer " + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN
         }
       });
 
@@ -38,13 +42,52 @@ const BookmarkedMovies = ({ onBookmarkToggle }) => {
     }
   };
 
-  const handleBookmarkToggle = (movieId) => {
-    onBookmarkToggle(movieId);
+const handleBookmarkToggle = async (movieId) => {
+    try {
+      const storedBookmark = localStorage.getItem(`bookmark_${movieId}`);
+      const newBookmarkStatus = storedBookmark !== 'true';
+      localStorage.setItem(`bookmark_${movieId}`, newBookmarkStatus.toString());
+      
+      const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
+      
+      const method = 'POST';
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: "Bearer " + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN
+        },
+        body: JSON.stringify({
+          media_type: 'movie',
+          media_id: movieId,
+          favorite: newBookmarkStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to ${newBookmarkStatus ? 'add' : 'remove'} bookmark`);
+      }
+
+      setBookmarkedMovies(prevMovies => prevMovies.map(movie => {
+        if (movie.id === movieId) {
+          return { ...movie, isBookmarked: newBookmarkStatus };
+        }
+        return movie;
+      }));
+    } catch (error) {
+      console.error('Bookmark Error:', error);
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Bookmarked Movies</h1>
+      <Link href="/"><FontAwesomeIcon className='h-8 left-6 ml-2' icon={faArrowLeft} /></Link>
       <div>
         {bookmarkedMovies.map((movie) => (
           <div key={movie.id} className="mb-8">
@@ -66,7 +109,7 @@ const BookmarkedMovies = ({ onBookmarkToggle }) => {
               <FontAwesomeIcon icon={faStar} className="text-yellow-500 mr-1" />
               <span>{parseFloat(movie.vote_average).toFixed(1)}/10 IMDb</span>
             </div>
-            <BookmarkButton onClick={() => handleBookmarkToggle(movie.id)}>Save</BookmarkButton>
+            <BookmarkButton isBookmarked={movie.isBookmarked} toggleBookmark={() => handleBookmarkToggle(movie.id)} />
           </div>
         ))}
       </div>

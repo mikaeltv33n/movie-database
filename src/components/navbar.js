@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faTicket, faBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import Link from 'next/link';
 
 export default function NavBar() {
@@ -8,11 +9,11 @@ export default function NavBar() {
             <Link href="/">
                 <FontAwesomeIcon icon={faVideo} className='text-black' />
             </Link>
-            <Link href="/">
+            <Link href="/signin">
                 <FontAwesomeIcon className='rotate-90 text-black' icon={faTicket} />
             </Link>
             <Link href="/bookmark">
-                <FontAwesomeIcon icon={faBookmark} className='text-black' />
+                <FontAwesomeIcon icon={farBookmark} className='text-black' />
             </Link>
         </nav>
     );

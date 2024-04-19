@@ -1,36 +1,47 @@
 "use client"
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
-import { toast } from "react-toastify";
-
+import { toast, Zoom, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BookmarkedMovies = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBookmarkedMovies().then((movies) => {
-      setBookmarkedMovies(movies.map(movie => ({ ...movie, isBookmarked: localStorage.getItem(`bookmark_${movie.id}`) === 'true' })));
-      setLoading(false);
-    }).catch((error) => {
-      console.error('Error fetching bookmarked movies:', error);
-      setLoading(false);
-    });
+    fetchBookmarkedMovies()
+      .then((movies) => {
+        setBookmarkedMovies(
+          movies.map((movie) => ({
+            ...movie,
+            isBookmarked: localStorage.getItem(`bookmark_${movie.id}`) === 'true',
+          }))
+        );
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching bookmarked movies:', error);
+        setLoading(false);
+      });
   }, []);
 
   const fetchBookmarkedMovies = async () => {
     try {
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-      const response = await fetch(`https://api.themoviedb.org/3/account/21189807/favorite/movies?language=en-US&page=1&sort_by=created_at.asc&api_key=${apiKey}&append_to_response=videos,images`, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: "Bearer " + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN
+      const response = await fetch(
+        `https://api.themoviedb.org/3/account/21189807/favorite/movies?language=en-US&page=1&sort_by=created_at.asc&api_key=${apiKey}&append_to_response=videos,images`,
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer ' + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN,
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch bookmarked movies');
@@ -58,7 +69,7 @@ const BookmarkedMovies = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: "Bearer " + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN
+          Authorization: 'Bearer ' + process.env.NEXT_PUBLIC_READ_ACCESS_TOKEN,
         },
         body: JSON.stringify({
           media_type: 'movie',
@@ -72,30 +83,30 @@ const BookmarkedMovies = () => {
       }
 
       if (!newBookmarkStatus) {
-        setBookmarkedMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
+        setBookmarkedMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== movieId));
 
         toast.success('Movie removed from bookmarks');
       } else {
-        setBookmarkedMovies(prevMovies => prevMovies.map(movie => {
-          if (movie.id === movieId) {
-            return { ...movie, isBookmarked: newBookmarkStatus };
-          }
-          return movie;
-        }));
+        setBookmarkedMovies((prevMovies) =>
+          prevMovies.map((movie) => {
+            if (movie.id === movieId) {
+              return { ...movie, isBookmarked: newBookmarkStatus };
+            }
+            return movie;
+          })
+        );
       }
     } catch (error) {
       console.error('Bookmark Error:', error);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Bookmarked Movies</h1>
-      <Link href="/"><FontAwesomeIcon className='h-8 left-6 ml-2' icon={faArrowLeft} /></Link>
+      <Link href="/">
+        <FontAwesomeIcon className="h-8 left-6 ml-2" icon={faArrowLeft} />
+      </Link>
       <div>
         {bookmarkedMovies.map((movie) => (
           <div key={movie.id} className="mb-8">
@@ -121,7 +132,15 @@ const BookmarkedMovies = () => {
           </div>
         ))}
       </div>
-   
+      <ToastContainer
+       position="bottom-center"
+       hideProgressBar={true}
+       draggable
+       closeButton={false}
+       stacked={true}
+       transition={Zoom}
+       autoClose={false}
+      />
     </div>
   );
 };

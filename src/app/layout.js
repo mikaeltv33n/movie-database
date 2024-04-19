@@ -1,6 +1,5 @@
 import "./globals.css"
-import { ToastContainer, Zoom } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+
 
 export const metadata = {
   title: "Create Next App",
@@ -13,15 +12,7 @@ export default function RootLayout({ children }) {
       <body>
         
         {children}
-        <ToastContainer
-          position="bottom-center"
-          hideProgressBar={true}
-          draggable
-          closeButton={false}
-          stacked={true}
-          transition={Zoom}
-          autoClose={false}
-        />
+      
       </body>
     </html>
   )

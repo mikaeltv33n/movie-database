@@ -16,7 +16,7 @@ const MovieDetail = ({ params }) => {
     const fetchMovieDetail = async () => {
       try {
         const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-        const apiUrl = `https://api.themoviedb.org/3/movie/${params.movieid}?api_key=${apiKey}&append_to_response=videos,images`;
+        const apiUrl = `https://api.themoviedb.org/3/movie/${params.movieid}?api_key=${apiKey}&append_to_response=videos,images,credits`;
 
         const response = await fetch(apiUrl);
         if (!response.ok) {
@@ -55,7 +55,7 @@ const MovieDetail = ({ params }) => {
       const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
 
       const method = 'POST'; 
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -125,6 +125,7 @@ const MovieDetail = ({ params }) => {
       </div>
       <h2 className='text-2xl font-bold my-2'>Description</h2>
       <p className='my-2'>{movie.overview}</p>
+      
     </div>
   );
 };

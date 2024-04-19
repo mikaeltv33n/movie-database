@@ -54,7 +54,7 @@ const MovieDetail = ({ params }) => {
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
       const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
 
-      const method = 'POST'; 
+      const method = 'POST';
 
       const response = await fetch(url, {
         method,
@@ -113,19 +113,31 @@ const MovieDetail = ({ params }) => {
           </div>
         )}
       </div>
-      <Link href="/"><FontAwesomeIcon className='absolute top-11 h-6 left-4 text-white' icon={faArrowLeft} /></Link>
-      <DarkModeButton className="absolute top-4 right-4" />
-      <h1 className="text-3xl">{movie.title}</h1>
-      <span>
-        <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
-        {parseFloat(movie.vote_average).toFixed(1)}/10 IMDb
-      </span>
-      <div className="absolute top-60 right-5">
-        <BookmarkButton isBookmarked={isBookmarked} toggleBookmark={toggleBookmark} />
-      </div>
-      <h2 className='text-2xl font-bold my-2'>Description</h2>
-      <p className='my-2'>{movie.overview}</p>
-      
+        <Link href="/"><FontAwesomeIcon className='absolute top-11 h-6 left-4 text-white' icon={faArrowLeft} /></Link>
+        <DarkModeButton className="absolute top-4 right-4" />
+        <h1 className="text-3xl">{movie.title}</h1>
+        <span>
+          <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
+          {parseFloat(movie.vote_average).toFixed(1)}/10 IMDb
+        </span>
+        <div className="absolute top-60 right-5">
+          <BookmarkButton isBookmarked={isBookmarked} toggleBookmark={toggleBookmark} />
+        </div>
+        <h2 className='text-2xl font-bold my-2'>Description</h2>
+        <p className='my-2'>{movie.overview}</p>
+
+        <h2 className='text-2xl font-bold my-2'>Cast</h2>
+        
+        <div className="flex flex-wrap justify-start items-start">
+
+          {movie.credits.cast.map(actor => (
+            actor.profile_path && (
+              <div key={actor.id} className="w-1/4 p-2">
+                <img className='rounded' src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`} alt={actor.name} />
+                <p className="text-sm">{actor.name}</p>
+              </div>
+            )))}
+        </div>
     </div>
   );
 };

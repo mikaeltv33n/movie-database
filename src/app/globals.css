@@ -18,3 +18,11 @@ body {
     background-color: black;
     color: white;
 }
+
+.overflow-x-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .overflow-x-scroll {
+    scrollbar-width: none; 
+  }

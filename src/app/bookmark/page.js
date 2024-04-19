@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 
 const BookmarkedMovies = () => {
@@ -74,7 +73,7 @@ const BookmarkedMovies = () => {
 
       if (!newBookmarkStatus) {
         setBookmarkedMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
-        
+
         toast.success('Movie removed from bookmarks');
       } else {
         setBookmarkedMovies(prevMovies => prevMovies.map(movie => {
@@ -122,7 +121,7 @@ const BookmarkedMovies = () => {
           </div>
         ))}
       </div>
-      <ToastContainer position='bottom' />
+   
     </div>
   );
 };

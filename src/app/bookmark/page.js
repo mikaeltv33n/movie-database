@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const BookmarkedMovies = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
@@ -42,15 +45,15 @@ const BookmarkedMovies = () => {
     }
   };
 
-const handleBookmarkToggle = async (movieId) => {
+  const handleBookmarkToggle = async (movieId) => {
     try {
       const storedBookmark = localStorage.getItem(`bookmark_${movieId}`);
       const newBookmarkStatus = storedBookmark !== 'true';
       localStorage.setItem(`bookmark_${movieId}`, newBookmarkStatus.toString());
-      
+
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
       const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
-      
+
       const method = 'POST';
       const response = await fetch(url, {
         method,
@@ -69,12 +72,18 @@ const handleBookmarkToggle = async (movieId) => {
         throw new Error(`Failed to ${newBookmarkStatus ? 'add' : 'remove'} bookmark`);
       }
 
-      setBookmarkedMovies(prevMovies => prevMovies.map(movie => {
-        if (movie.id === movieId) {
-          return { ...movie, isBookmarked: newBookmarkStatus };
-        }
-        return movie;
-      }));
+      if (!newBookmarkStatus) {
+        setBookmarkedMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
+        
+        toast.success('Movie removed from bookmarks');
+      } else {
+        setBookmarkedMovies(prevMovies => prevMovies.map(movie => {
+          if (movie.id === movieId) {
+            return { ...movie, isBookmarked: newBookmarkStatus };
+          }
+          return movie;
+        }));
+      }
     } catch (error) {
       console.error('Bookmark Error:', error);
     }
@@ -113,6 +122,7 @@ const handleBookmarkToggle = async (movieId) => {
           </div>
         ))}
       </div>
+      <ToastContainer position='bottom' />
     </div>
   );
 };

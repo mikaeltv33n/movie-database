@@ -3,6 +3,7 @@ import SeeMorebtn from './seemorebtn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 
+
 const MovieList = ({ movies }) => {
     const [genres, setGenres] = useState({});
 
@@ -50,7 +51,7 @@ const MovieList = ({ movies }) => {
                             <div className="text-lg font-bold mb-2">{movie.title}</div>
                             <div>
                                 {movie.genre.map(genreId => (
-                                    <span className='bg-blue-300 border rounded-lg m-1 ' key={genreId}>{genres[genreId]}, </span>
+                                    <span className='bg-blue-300 rounded-lg m-1 ' key={genreId}>{genres[genreId]}, </span>
                                 ))}
                             </div>
                             <div className="flex items-center">

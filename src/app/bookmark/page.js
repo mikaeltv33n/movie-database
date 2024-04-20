@@ -7,6 +7,7 @@ import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
 import { toast, Zoom, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NavBar from '@/components/navbar';
 
 const BookmarkedMovies = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
@@ -141,6 +142,7 @@ const BookmarkedMovies = () => {
        transition={Zoom}
        autoClose={false}
       />
+      <NavBar />
     </div>
   );
 };

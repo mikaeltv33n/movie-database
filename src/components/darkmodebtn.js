@@ -17,7 +17,7 @@ const DarkModeButton = () => {
     }, [darkMode]);
 
     return (
-        <div className="absolute top-10 right-4">
+        <div className="absolute top-16 right-4">
             <label htmlFor="darkModeToggle" className="flex items-center cursor-pointer">
                 <div className="relative">
                     <input

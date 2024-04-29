@@ -6,6 +6,8 @@ import { faStar, faPlay, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DarkModeButton from '@/components/darkmodebtn';
 import BookmarkButton from '@/components/bookmarkbutton';
 import Link from 'next/link';
+import getIds from '@/actions/getids';
+
 
 const MovieDetail = ({ params }) => {
   const [movie, setMovie] = useState(null);
@@ -52,8 +54,10 @@ const MovieDetail = ({ params }) => {
       setIsBookmarked(newBookmarkStatus);
 
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-      const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
+      const ids = await getIds()
 
+      const url = `https://api.themoviedb.org/3/account/${ids.account_id}/favorite?api_key=${apiKey}`;
+      
       const method = 'POST';
 
       const response = await fetch(url, {
@@ -113,7 +117,7 @@ const MovieDetail = ({ params }) => {
           </div>
         )}
       </div>
-        <Link href="/"><FontAwesomeIcon className='absolute top-11 h-6 left-4 text-white' icon={faArrowLeft} /></Link>
+        <Link href="/"><FontAwesomeIcon className='absolute top-[67px] h-6 left-4 text-white' icon={faArrowLeft} /></Link>
         <DarkModeButton className="absolute top-4 right-4" />
         <h1 className="text-3xl">{movie.title}</h1>
         <span>
@@ -133,7 +137,7 @@ const MovieDetail = ({ params }) => {
           {movie.credits.cast.map(actor => (
             actor.profile_path && (
               <div key={actor.id} className="w-1/4 p-2">
-                <img className='rounded' src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`} alt={actor.name} />
+                <img className="rounded" src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`} alt={actor.name} />
                 <p className="text-sm">{actor.name}</p>
               </div>
             )))}

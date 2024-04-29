@@ -8,6 +8,9 @@ const FetchComponent = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+
+      //  if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js")
+      
       try {
         const apiKey = process.env.NEXT_PUBLIC_API_KEY;
         const apiUrl = `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&append_to_response=videos,images&page=1`;

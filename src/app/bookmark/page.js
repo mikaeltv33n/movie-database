@@ -1,11 +1,13 @@
 "use client"
 
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import BookmarkButton from '@/components/bookmarkbutton';
 import { toast, Zoom, ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from '@/components/navbar';
 
@@ -33,6 +35,7 @@ const BookmarkedMovies = () => {
   const fetchBookmarkedMovies = async () => {
     try {
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+
       const response = await fetch(
         `https://api.themoviedb.org/3/account/21189807/favorite/movies?language=en-US&page=1&sort_by=created_at.asc&api_key=${apiKey}&append_to_response=videos,images`,
         {
@@ -47,7 +50,7 @@ const BookmarkedMovies = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch bookmarked movies');
       }
-
+      
       const data = await response.json();
       return data.results;
     } catch (error) {
@@ -61,6 +64,7 @@ const BookmarkedMovies = () => {
       const storedBookmark = localStorage.getItem(`bookmark_${movieId}`);
       const newBookmarkStatus = storedBookmark !== 'true';
       localStorage.setItem(`bookmark_${movieId}`, newBookmarkStatus.toString());
+
 
       const apiKey = process.env.NEXT_PUBLIC_API_KEY;
       const url = `https://api.themoviedb.org/3/account/21189807/favorite?api_key=${apiKey}`;
@@ -110,8 +114,8 @@ const BookmarkedMovies = () => {
       </Link>
       <div>
         {bookmarkedMovies.map((movie) => (
-          <div key={movie.id} className="mb-8">
-            <div className="relative w-full h-0" style={{ paddingBottom: '56.25%' }}>
+          <div key={movie.id} className="mb-8 flex flex-row flex-wrap items-center">
+            <div className="w-40 h-56 relative overflow-hidden rounded">
               {movie.backdrop_path ? (
                 <img
                   src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
@@ -124,12 +128,14 @@ const BookmarkedMovies = () => {
                 </div>
               )}
             </div>
-            <h2 className="text-2xl font-bold mt-4">{movie.title}</h2>
-            <div className="flex items-center mt-2">
-              <FontAwesomeIcon icon={faStar} className="text-yellow-500 mr-1" />
-              <span>{parseFloat(movie.vote_average).toFixed(1)}/10 IMDb</span>
+            <div className="ml-4">
+              <h2 className="text-2xl font-bold mt-4">{movie.title}</h2>
+              <div className="flex items-center mt-2">
+                <FontAwesomeIcon icon={faStar} className="text-yellow-500 mr-1" />
+                <span>{parseFloat(movie.vote_average).toFixed(1)}/10 IMDb</span>
+              </div>
+              <BookmarkButton isBookmarked={movie.isBookmarked} toggleBookmark={() => handleBookmarkToggle(movie.id)} />
             </div>
-            <BookmarkButton isBookmarked={movie.isBookmarked} toggleBookmark={() => handleBookmarkToggle(movie.id)} />
           </div>
         ))}
       </div>
